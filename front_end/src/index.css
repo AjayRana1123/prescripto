@@ -1,4 +1,9 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap');
+
+*{
+  font-family: Outfit;
+}
 
 @theme {
   --color-primary: #5f6FFF;
@@ -11,5 +16,10 @@
   @apply hidden;
 }
 
+@media (max-width:740px) {
+  .active p{
+    @apply text-white bg-primary
+  }
+}
 
 
