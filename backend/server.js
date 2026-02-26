@@ -16,7 +16,13 @@ connectCloudinary()
 
 // Middleware
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://prescripto-admin-omega.vercel.app"
+  ],
+  credentials: true
+}))
 
 // API endpoint
 app.use('/api/admin',adminRouter)
