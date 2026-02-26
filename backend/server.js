@@ -19,8 +19,10 @@ app.use(express.json())
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "https://prescripto-admin-pink-one.vercel.app",
     "https://prescripto-admin-omega.vercel.app"
   ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }))
 
