@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "https://prescripto-admin.vercel.app",
+     "https://prescripto-admin-pink.vercel.app",
       "https://prescripto-frontend.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
