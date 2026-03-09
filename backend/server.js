@@ -20,10 +20,15 @@ connectCloudinary();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "https://prescripto-admin12.vercel.app",
+      "https://prescripto-frontend.vercel.app"
+    ],
+    credentials: true
+  })
+);
 // Routes
 app.use("/api/admin", adminRouter);
 app.use("/api/doctor", doctorRouter);
