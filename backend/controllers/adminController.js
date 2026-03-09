@@ -4,6 +4,8 @@ import pkg from 'cloudinary'
 const { v2: cloudinary } = pkg
 import doctorModel from "../models/doctorModel.js"
 import jwt from 'jsonwebtoken'
+import appointmentModel from '../models/appointmentModel.js'
+import userModel from '../models/userModel.js'
 
 
 // API for adding doctor
@@ -106,4 +108,104 @@ const allDoctors=async (req,res) => {
   }
 }
 
-export {addDoctor,loginAdmin,allDoctors}
+//api to get all appointments list
+
+const appointmentsAdmin=async (req,res) => {
+  try{
+    const appointments=await appointmentModel.find({})
+    res.json({success:true,appointments})
+  }
+  catch(error){
+    console.log(error)
+    res.json({success:false,message:error.message})
+  }
+}
+const cancelAppointment = async (req,res) => {
+
+  try {
+
+    const { appointmentId, reason } = req.body
+
+    if(!reason){
+      return res.json({
+        success:false,
+        message:"Cancellation reason required"
+      })
+    }
+
+    const appointment = await appointmentModel.findById(appointmentId)
+
+    if (!appointment) {
+      return res.json({
+        success:false,
+        message:"Appointment not found"
+      })
+    }
+
+    appointment.cancelled = true
+    appointment.cancelReason = reason
+
+    await appointment.save()
+
+    const { doctorId, slotDate, slotTime } = appointment
+
+    const doctor = await doctorModel.findById(doctorId)
+
+    let slotsBooked = doctor.slots_booked || {}
+
+    if (slotsBooked[slotDate]) {
+
+      slotsBooked[slotDate] =
+      slotsBooked[slotDate].filter(slot => slot !== slotTime)
+
+      await doctorModel.findByIdAndUpdate(doctorId,{
+        slots_booked: slotsBooked
+      })
+
+    }
+
+    res.json({
+      success:true,
+      message:"Appointment cancelled successfully"
+    })
+
+  } catch (error) {
+
+    console.log(error)
+
+    res.json({
+      success:false,
+      message:error.message
+    })
+
+  }
+
+}
+
+
+// api to get dashboard data for admin panel
+  
+
+const adminDashboard=async (req,res) => {
+
+  try {
+    const doctors = await doctorModel.find({})
+    const users = await userModel.find({})
+    const appointments = await appointmentModel.find({})
+
+    const dashData={
+      doctors:doctors.length,
+      appointments:appointments.length,
+      patients:users.length,
+      latestAppointments:appointments.reverse().slice(0,5)
+    }
+    res.json({success:true,dashData})
+  } catch (error) {
+    console.log(error)
+    res.json({success:false,message:error.message})
+  }
+}
+
+
+
+export {addDoctor,loginAdmin,allDoctors,appointmentsAdmin,cancelAppointment,adminDashboard}

@@ -18,6 +18,7 @@ connectCloudinary();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 app.use(cors({
   origin: true,
@@ -27,6 +28,10 @@ app.use(cors({
 app.use("/api/admin", adminRouter);
 app.use("/api/doctor", doctorRouter);
 app.use("/api/user", userRouter);
+
+app.listen(4000, () => {
+  console.log("Server running on port 4000")
+})
 
 // Root Route
 app.get("/", (req, res) => {
